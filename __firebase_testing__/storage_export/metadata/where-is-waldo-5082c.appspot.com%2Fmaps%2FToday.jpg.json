@@ -1,0 +1,20 @@
+{
+  "name": "maps/Today.jpg",
+  "bucket": "where-is-waldo-5082c.appspot.com",
+  "contentType": "image/jpeg",
+  "metageneration": 1,
+  "generation": 1652169257410,
+  "storageClass": "STANDARD",
+  "contentDisposition": "inline",
+  "cacheControl": "public, max-age=3600",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "e55be48e-a04a-422e-a73d-d8f7d804966c"
+  ],
+  "etag": "TfllJ3qmokTEQ+stkcU+MMPLbqI",
+  "timeCreated": "2022-05-10T07:54:17.409Z",
+  "updated": "2022-05-10T07:54:17.418Z",
+  "size": 1889507,
+  "md5Hash": "n3kPlZBC8V2LjxkOyD8kDw==",
+  "crc32c": "810655152"
+}
