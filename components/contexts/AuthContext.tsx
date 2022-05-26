@@ -12,12 +12,12 @@ interface user {
   isAnonymous: boolean;
 }
 
-const userContext = createContext<user | null>({
+const authContext = createContext<user | null>({
   uid: "",
   isAnonymous: true,
 });
 
-const useUserContext = () => useContext(userContext);
+const useAuthContext = () => useContext(authContext);
 
 const AuthProvider = ({ children }: Props): JSX.Element => {
   const [user, setUser] = useState<user | null>(null);
@@ -36,6 +36,6 @@ const AuthProvider = ({ children }: Props): JSX.Element => {
     return () => unsubscribe();
   }, []);
 
-  return <userContext.Provider value={user}>{children}</userContext.Provider>;
+  return <authContext.Provider value={user}>{children}</authContext.Provider>;
 };
-export { useUserContext, AuthProvider };
+export { useAuthContext, AuthProvider };

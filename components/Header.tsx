@@ -4,10 +4,10 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { signOut } from "firebase/auth";
 import { authentication } from "../firebase/app";
-import { useUserContext } from "./contexts/AuthContext";
+import { useAuthContext } from "./contexts/AuthContext";
 
 const Header = (): JSX.Element => {
-  const user = useUserContext();
+  const user = useAuthContext();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 

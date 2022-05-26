@@ -2,7 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["where-is-waldo-5082c.appspot.com", "localhost"],
+    domains: [
+      "where-is-waldo-5082c.appspot.com",
+      "localhost",
+      "firebasestorage.googleapis.com",
+    ],
   },
 };
 
