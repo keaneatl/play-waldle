@@ -13,7 +13,7 @@ import { SyntheticEvent, useEffect, useState, useRef } from "react";
 import { getCharsData } from "../components/helpers/getCharacters";
 import Characters from "../components/menus/Characters";
 import { useGameState } from "../components/hooks/useGuess";
-import DailyMap from "../public/Today.jpg";
+import DailyMap from "../public/Today.jpg"; // TODO: DO THIS WITH SSR
 
 type Character = { name: string; status: string | null };
 type Characters = Character[] | null;
