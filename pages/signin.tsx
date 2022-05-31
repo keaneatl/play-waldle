@@ -14,12 +14,12 @@ import {
   styled,
 } from "@mui/material";
 import {
-  signInWithEmailAndPassword,
-  AuthErrorCodes,
   GoogleAuthProvider,
   signInWithPopup,
   signInAnonymously,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
+import setUsers from "../components/helpers/backend/setUsers";
 import Link from "next/link";
 
 const Auth: NextPage = () => {
@@ -39,7 +39,9 @@ const Auth: NextPage = () => {
   const handleGoogleLogin = async () => {
     try {
       const googleProvider = new GoogleAuthProvider();
-      await signInWithPopup(authentication, googleProvider);
+      const result = await signInWithPopup(authentication, googleProvider);
+      const user = result.user;
+      setUsers(user);
       router.push("/");
     } catch (error: any) {
       handleError(error.message);
@@ -57,16 +59,16 @@ const Auth: NextPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(authentication, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        authentication,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      setUsers(user);
       router.push("/");
     } catch (error: any) {
-      if (error.code === AuthErrorCodes.INVALID_PASSWORD) {
-        handleError("Wrong password. Please try again.");
-      } else if (error.code === AuthErrorCodes.INTERNAL_ERROR) {
-        handleError("Error: Please check your credentials.");
-      } else {
-        handleError(error.message);
-      }
+      handleError(error.message);
     }
   };
 

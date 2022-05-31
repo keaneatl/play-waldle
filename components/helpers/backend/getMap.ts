@@ -1,10 +1,7 @@
 import { ref, getDownloadURL } from "firebase/storage";
-import { storage } from "../../firebase/app";
+import { storage } from "../../../firebase/app";
 
-export const getMap = async (
-  category: string,
-  mapSetter: (url: string) => void
-) => {
+const getMap = async (category: string, mapSetter: (url: string) => void) => {
   try {
     const mapRef = ref(storage, `maps/${category}.jpg`);
     const url = await getDownloadURL(mapRef);
@@ -14,3 +11,5 @@ export const getMap = async (
     alert("error");
   }
 };
+
+export default getMap;

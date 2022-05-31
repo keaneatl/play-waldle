@@ -19,6 +19,7 @@ import {
   signInAnonymously,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
+import setUsers from "../components/helpers/backend/setUsers";
 
 const Auth: NextPage = () => {
   const router = useRouter();
@@ -37,7 +38,9 @@ const Auth: NextPage = () => {
   const handleGoogleLogin = async () => {
     try {
       const googleProvider = new GoogleAuthProvider();
-      await signInWithPopup(authentication, googleProvider);
+      const result = await signInWithPopup(authentication, googleProvider);
+      const user = result.user;
+      setUsers(user);
       router.push("/");
     } catch (error: any) {
       handleError(error.message);
@@ -55,7 +58,13 @@ const Auth: NextPage = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(authentication, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        authentication,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      setUsers(user);
       router.push("/");
     } catch (error: any) {
       handleError(error.message);

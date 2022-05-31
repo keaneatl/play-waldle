@@ -9,12 +9,18 @@ type Props = {
 
 interface user {
   uid: string;
+  displayName?: string | null;
+  email: string | null;
+  photoURL?: string | null;
+  emailVerified: boolean;
   isAnonymous: boolean;
 }
 
 const authContext = createContext<user | null>({
   uid: "",
+  email: "",
   isAnonymous: true,
+  emailVerified: false,
 });
 
 const useAuthContext = () => useContext(authContext);
@@ -25,9 +31,21 @@ const AuthProvider = ({ children }: Props): JSX.Element => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(authentication, (user) => {
       if (user) {
+        const {
+          uid,
+          displayName,
+          photoURL,
+          emailVerified,
+          isAnonymous,
+          email,
+        } = user;
         setUser({
-          uid: user.uid,
-          isAnonymous: user.isAnonymous,
+          uid,
+          email,
+          displayName,
+          photoURL,
+          emailVerified,
+          isAnonymous,
         });
       } else {
         setUser(null);
@@ -39,3 +57,4 @@ const AuthProvider = ({ children }: Props): JSX.Element => {
   return <authContext.Provider value={user}>{children}</authContext.Provider>;
 };
 export { useAuthContext, AuthProvider };
+export { type user };

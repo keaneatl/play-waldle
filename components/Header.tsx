@@ -5,11 +5,27 @@ import React, { useState } from "react";
 import { signOut } from "firebase/auth";
 import { authentication } from "../firebase/app";
 import { useAuthContext } from "./contexts/AuthContext";
+import HowToPlay from "./helpers/HowToPlay";
 
 const Header = (): JSX.Element => {
-  const user = useAuthContext();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [guideIsOpen, setGuideIsOpen] = useState(false);
+  const user = useAuthContext();
   const open = Boolean(anchorEl);
+
+  const handleOpenGuide = () => {
+    setGuideIsOpen(true);
+    if (anchorEl) {
+      setAnchorEl(null);
+    }
+  };
+
+  const handleCloseGuide = () => {
+    setGuideIsOpen(false);
+    if (anchorEl) {
+      setAnchorEl(null);
+    }
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -31,6 +47,7 @@ const Header = (): JSX.Element => {
 
   return (
     <HeaderContainer>
+      <HowToPlay open={guideIsOpen} handleClose={handleCloseGuide} />
       <Grid container sx={{ display: { xs: "none", md: "flex" } }}>
         <Grid item xs={3}>
           <Item sx={{ backgroundColor: "primary.dark" }}>
@@ -47,19 +64,23 @@ const Header = (): JSX.Element => {
           </Item>
         </Grid>
         <Grid item xs={1.8}>
-          <Item>HOW TO PLAY</Item>
+          <NavButton onClick={handleOpenGuide} color="inherit">
+            <NavButtonLabel>HOW TO PLAY</NavButtonLabel>
+          </NavButton>
         </Grid>
         <Grid item xs={1.8}>
           <Item>MORE MAPS</Item>
         </Grid>
         <Grid item xs={1.8}>
-          <Item>CONTACT</Item>
+          <Item>
+            <a href="mailto:keanetolentinoo@gmail.com">CONTACT</a>
+          </Item>
         </Grid>
         <Grid item xs={1.8}>
           {user !== null ? (
-            <AuthButton onClick={handleSignOut} color="inherit">
-              <AuthButtonLabel>SIGN OUT</AuthButtonLabel>
-            </AuthButton>
+            <NavButton onClick={handleSignOut} color="inherit">
+              <NavButtonLabel>SIGN OUT</NavButtonLabel>
+            </NavButton>
           ) : (
             <Item>
               <Link href="/signin">
@@ -102,20 +123,23 @@ const Header = (): JSX.Element => {
             borderRadius: 0,
           },
         }}
-        keepMounted
       >
         <MenuItem>
           <Link href="/play">
             <a>PLAY</a>
           </Link>
         </MenuItem>
-        <MenuItem onClick={handleClose}>HOW TO PLAY</MenuItem>
+        <MenuItem onClick={handleOpenGuide}>HOW TO PLAY</MenuItem>
         <MenuItem onClick={handleClose}>MORE MAPS</MenuItem>
-        <MenuItem onClick={handleClose}>CONTACT</MenuItem>
+        <MenuItem onClick={handleClose}>
+          <a href="mailto:keanetolentinoo@gmail.com">CONTACT</a>
+        </MenuItem>
         {user !== null ? (
-          <AuthButton onClick={handleSignOut} color="inherit">
-            <AuthButtonLabel>SIGN OUT</AuthButtonLabel>
-          </AuthButton>
+          <MenuItem>
+            <Button onClick={handleSignOut} color="inherit">
+              <Typography>SIGN OUT</Typography>
+            </Button>
+          </MenuItem>
         ) : (
           <MenuItem>
             <Link href="/signin">
@@ -158,11 +182,11 @@ const MenuButton = styled(Button)(
   `
 );
 
-const AuthButton = styled(MenuButton)`
+const NavButton = styled(MenuButton)`
   padding: 25px 10px;
 `;
 
-const AuthButtonLabel = styled(Typography)(
+const NavButtonLabel = styled(Typography)(
   ({ theme }) => `
     font-weight: ${theme.typography.fontWeightBold};
   `
