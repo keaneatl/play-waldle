@@ -16,12 +16,16 @@ import Leaderboard from "./Leaderboard";
 import { useEffect, useState } from "react";
 
 type Props = {
-  requireAlias: boolean;
+  showLeaderboard: boolean;
   gameOver: boolean;
   mapCredits: { author: string; credits: string };
 };
 
-const Drawer = ({ requireAlias, gameOver, mapCredits }: Props): JSX.Element => {
+const Drawer = ({
+  showLeaderboard,
+  gameOver,
+  mapCredits,
+}: Props): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleToggle = () => setIsOpen((prevState) => !prevState);
@@ -39,7 +43,7 @@ const Drawer = ({ requireAlias, gameOver, mapCredits }: Props): JSX.Element => {
       </ToggleContainer>
       <Dialog open={isOpen} onClose={handleToggle}>
         <DialogTitle>LEADERBOARD</DialogTitle>
-        {requireAlias ? (
+        {showLeaderboard ? (
           <DialogContent>
             <DialogContentText>
               Please login or sign up to see the leaderboard

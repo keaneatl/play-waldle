@@ -25,6 +25,7 @@ import saveData, {
   Character,
 } from "../components/helpers/backend/setSavedData";
 import Drawer from "../components/menus/Drawer";
+import { useRouter } from "next/router";
 
 interface Category {
   name: string;
@@ -54,6 +55,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
   const [mapCompleted, setMapCompleted] = useState(false);
   const user = useAuthContext();
   const weeklyCategory = category;
+  const router = useRouter();
 
   const handleActiveGuess = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -118,10 +120,12 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
 
   // Check for previous gameData
   useEffect(() => {
-    if (user) {
+    if (!user) {
+      router.push("/signin");
+    } else {
       handleGameLoad();
     }
-  }, [handleGameLoad, user]);
+  }, [handleGameLoad, user, router]);
 
   // Guess listener
   useEffect(() => {
@@ -167,8 +171,6 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
           finalResult: characters,
         });
       }
-
-      // Require alias, upload score to leaderboard
       setGameOver(true);
       return;
     }
@@ -178,7 +180,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
   return (
     <>
       <Drawer
-        requireAlias={!Boolean(user && user.displayName)}
+        showLeaderboard={!Boolean(user && user.displayName)}
         gameOver={gameOver || mapCompleted}
         mapCredits={{
           author: weeklyCategory.author,

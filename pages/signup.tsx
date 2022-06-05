@@ -20,6 +20,7 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import setUsers from "../components/helpers/backend/setUsers";
+import Link from "next/link";
 
 const Auth: NextPage = () => {
   const router = useRouter();
@@ -109,6 +110,12 @@ const Auth: NextPage = () => {
           Continue with Google
         </GoogleSignInBtn>
       </Form>
+      <Typography>
+        Already have an account?{" "}
+        <Link href="/signin">
+          <a>Sign In</a>
+        </Link>
+      </Typography>
     </FormContainer>
   );
 };
