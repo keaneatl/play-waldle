@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "where-is-waldo-5082c"
-  }
+    "default": "waldle",
+    "deployment": "waldle"
+  },
+  "targets": {}
 }

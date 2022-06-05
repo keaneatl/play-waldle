@@ -1,4 +1,4 @@
-import { Box, styled } from "@mui/material";
+import { Box, CircularProgress, styled } from "@mui/material";
 import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import { useAuthContext } from "../components/contexts/AuthContext";
@@ -7,7 +7,7 @@ import getGuessResult, {
   Target,
   Guess,
 } from "../components/helpers/backend/getGuessResult";
-import WeeklyMap from "../public/Today.jpg";
+import WeeklyMap from "../public/Weekly.jpg";
 import { useStopwatch } from "../components/hooks/useStopwatch";
 import { Dispatch, SetStateAction } from "react";
 import Dropdown from "../components/menus/Dropdown";
@@ -129,7 +129,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
 
   // Guess listener
   useEffect(() => {
-    if (mapCompleted) {
+    if (mapCompleted || !user) {
       return;
     }
 
@@ -146,11 +146,11 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
         });
       });
     }
-  }, [guesses, mapCompleted]);
+  }, [guesses, mapCompleted, user]);
 
   // Game status listener
   useEffect(() => {
-    if (mapCompleted) {
+    if (mapCompleted || !user) {
       return;
     }
 
@@ -161,7 +161,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
     ) {
       runStopwatch(false);
 
-      if (user && user.displayName) {
+      if (user.displayName) {
         saveData({
           category: weeklyCategory.name,
           guesses: guesses,
@@ -175,7 +175,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
       return;
     }
     return;
-  }, [characters, guesses, mapCompleted]);
+  }, [characters, guesses, mapCompleted, user]);
 
   return (
     <>
@@ -192,29 +192,41 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
         onClick={handleGuessEvent}
         activeTarget={Boolean(target)}
       />
-      <MapContainer
-        onClick={handleActiveGuess}
-        sx={{
-          maxWidth: mapDimensions.width,
-          maxHeight: mapDimensions.height,
-        }}
-      >
-        {target && (
-          <TargetBox
-            sx={{
-              top: target.cursorY - targetBoxOffset.top,
-              left: target.cursorX - targetBoxOffset.left,
-            }}
+      {user ? (
+        <MapContainer
+          onClick={handleActiveGuess}
+          sx={{
+            maxWidth: mapDimensions.width,
+            maxHeight: mapDimensions.height,
+          }}
+        >
+          {target && (
+            <TargetBox
+              sx={{
+                top: target.cursorY - targetBoxOffset.top,
+                left: target.cursorX - targetBoxOffset.left,
+              }}
+            />
+          )}
+          <Markers guesses={guesses} />
+          <Image
+            src={WeeklyMap}
+            alt="Waldle Daily Map"
+            layout="fixed"
+            onLoad={handleImageLoad}
           />
-        )}
-        <Markers guesses={guesses} />
-        <Image
-          src={WeeklyMap}
-          alt="Waldle Daily Map"
-          layout="fixed"
-          onLoad={handleImageLoad}
-        />
-      </MapContainer>
+        </MapContainer>
+      ) : (
+        <Box
+          width="100%"
+          height="80vh"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <CircularProgress color="secondary" />
+        </Box>
+      )}
     </>
   );
 };

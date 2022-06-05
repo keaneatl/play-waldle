@@ -7,8 +7,8 @@
 
 # testing
 /coverage
-/components/helpers/backend/getCategories.ts
-/components/helpers/backend/getCharacters.ts
+__tests__
+utils
 
 # next.js
 /.next/

@@ -3,14 +3,14 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
-// Your firebase config here :)
 const firebaseConfig = {
-  apiKey: "AIzaSyA3d3zuA7err1acw0ex2GqpEd3iiq9_pwI",
-  authDomain: "where-is-waldo-5082c.firebaseapp.com",
-  projectId: "where-is-waldo-5082c",
-  storageBucket: "where-is-waldo-5082c.appspot.com",
-  messagingSenderId: "361954758980",
-  appId: "1:361954758980:web:f4ed8c6c5ac67236144711",
+  apiKey: "AIzaSyAxZ61fWdC5E7f6fi1CGkz3NqwBO3RpdXE",
+  authDomain: "waldle.firebaseapp.com",
+  projectId: "waldle",
+  storageBucket: "waldle.appspot.com",
+  messagingSenderId: "513757604074",
+  appId: "1:513757604074:web:c1b695af4dc81ac5d68f93",
+  measurementId: "G-XKYKMFLQV6",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
