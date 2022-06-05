@@ -40,29 +40,11 @@ const Drawer = ({ requireAlias, gameOver, mapCredits }: Props): JSX.Element => {
       <Dialog open={isOpen} onClose={handleToggle}>
         <DialogTitle>LEADERBOARD</DialogTitle>
         {requireAlias ? (
-          <>
-            <DialogContent>
-              <DialogContentText>
-                Please login or sign up to see the leaderboard
-              </DialogContentText>
-              {gameOver && (
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Email Address"
-                  type="email"
-                  fullWidth
-                  variant="standard"
-                />
-              )}
-            </DialogContent>
-            {gameOver && (
-              <DialogActions>
-                <Button onClick={handleToggle}>Submit</Button>
-              </DialogActions>
-            )}
-          </>
+          <DialogContent>
+            <DialogContentText>
+              Please login or sign up to see the leaderboard
+            </DialogContentText>
+          </DialogContent>
         ) : (
           <>
             <DialogContent>

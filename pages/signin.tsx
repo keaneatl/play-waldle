@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
-import { LockOutlined, Google, AccountCircle } from "@mui/icons-material";
+import { LockOutlined, Google } from "@mui/icons-material";
 import { authentication } from "../firebase/app";
 import {
   Typography,
@@ -17,7 +17,6 @@ import {
 import {
   GoogleAuthProvider,
   signInWithPopup,
-  signInAnonymously,
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import setUsers from "../components/helpers/backend/setUsers";
@@ -47,15 +46,6 @@ const Auth: NextPage = () => {
 
       const user = result.user;
       setUsers(user);
-      router.push("/");
-    } catch (error: any) {
-      handleAlert(error.message);
-    }
-  };
-  const handlePlayAsGuest = async () => {
-    try {
-      await signInAnonymously(authentication);
-      handleAlert();
       router.push("/");
     } catch (error: any) {
       handleAlert(error.message);
@@ -122,13 +112,6 @@ const Auth: NextPage = () => {
         >
           Continue with Google
         </GoogleSignInBtn>
-        <SignInAsGuestBtn
-          startIcon={<AccountCircle />}
-          onClick={handlePlayAsGuest}
-          variant="contained"
-        >
-          Play as Guest
-        </SignInAsGuestBtn>
       </Form>
       <Typography>
         Don&apos;t have an account?{" "}
@@ -178,9 +161,5 @@ const SubmitButton = styled(Button)`
 `;
 
 const GoogleSignInBtn = styled(SubmitButton)`
-  margin-top: 15px;
-`;
-
-const SignInAsGuestBtn = styled(GoogleSignInBtn)`
-  margin-bottom: 25px;
+  margin: 15px 0;
 `;
