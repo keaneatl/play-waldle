@@ -1,34 +1,42 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<p align="center">
+  <h1 align="center">Waldle</h1>
+  <p align="center">
+    <strong>Tune in weekly to find three characters having only five tries in Walde, a Wordle-inspired Where is Waldo game.</strong>
+     <br /><br />
+    <a href="https://playwaldle.xyz" target="_blank"><strong>Live Preview »</strong></a>
+    <br /><br />
+  </p>
+</p>
 
-## Getting Started
+<a href="https://playwaldle.xyz" target="_blank"><img src="./public/preview.png" alt="Todo List App Live Preview"></a>
 
-First, run the development server:
+## About The Project
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+This was supposedly the last project for the JavaScript module of The Odin Project course, but I made it into my own project and learned TypeScript and NextJS along the the way.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Made With
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+1. TypeScript
+2. NextJS
+3. Firebase
+4. MaterialUI
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Things I Learned
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+1. TypeScript
+2. NextJS
+3. Firebase
+4. Working with APIs
 
-## Learn More
+### Areas of improvement
 
-To learn more about Next.js, take a look at the following resources:
+1. Firebase Authentication flow
+2. First Load JS shared by all
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Disclaimer
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The resources I used, specifically the custom fonts installed, backgrounds, pictures, and the svg icons are only utilized for personal use, and not otherwise.
 
-## Deploy on Vercel
+## Contact
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Keane Andre - @keaneatl (Instagram, Facebook) - <a href="mailto:kyntltntn@protonmail.com">kyntltntn@protonmail.com</a>
