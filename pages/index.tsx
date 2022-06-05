@@ -1,12 +1,16 @@
 import { styled, Box, Typography, Container } from "@mui/material";
 import type { NextPage } from "next";
-
+import Head from "next/head";
 import Image from "next/image";
 import poster from "../public/poster.gif";
 
 const Home: NextPage = () => {
   return (
     <Container>
+      <Head>
+        <title>Waldle</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       <PosterBox>
         <Image
           src={poster}
