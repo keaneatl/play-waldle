@@ -5,12 +5,12 @@ import { getStorage } from "firebase/storage";
 
 // Your firebase config here :)
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyA3d3zuA7err1acw0ex2GqpEd3iiq9_pwI",
+  authDomain: "where-is-waldo-5082c.firebaseapp.com",
+  projectId: "where-is-waldo-5082c",
+  storageBucket: "where-is-waldo-5082c.appspot.com",
+  messagingSenderId: "361954758980",
+  appId: "1:361954758980:web:f4ed8c6c5ac67236144711",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
