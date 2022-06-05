@@ -9,6 +9,7 @@ import {
   Avatar,
   Container,
   Alert,
+  AlertTitle,
   Box,
   Button,
   styled,
@@ -23,16 +24,18 @@ import setUsers from "../components/helpers/backend/setUsers";
 
 const Auth: NextPage = () => {
   const router = useRouter();
-  const [showError, setShowError] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState("Unknown");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleError = (errorMessage: string) => {
-    setErrorMessage(
-      errorMessage.replace("Firebase: ", "").replace("auth/", "")
-    );
-    errorMessage ? setShowError(true) : setShowError(false);
+  const handleAlert = (errorMessage?: string) => {
+    if (errorMessage) {
+      setErrorMessage(
+        errorMessage.replace("Firebase: ", "").replace("auth/", "")
+      );
+    }
+    setShowAlert(true);
   };
 
   const handleGoogleLogin = async () => {
@@ -43,7 +46,7 @@ const Auth: NextPage = () => {
       setUsers(user);
       router.push("/");
     } catch (error: any) {
-      handleError(error.message);
+      handleAlert(error.message);
     }
   };
   const handlePlayAsGuest = async () => {
@@ -51,7 +54,7 @@ const Auth: NextPage = () => {
       await signInAnonymously(authentication);
       router.push("/");
     } catch (error: any) {
-      handleError(error.message);
+      handleAlert(error.message);
     }
   };
 
@@ -67,7 +70,7 @@ const Auth: NextPage = () => {
       setUsers(user);
       router.push("/");
     } catch (error: any) {
-      handleError(error.message);
+      handleAlert(error.message);
     }
   };
 
@@ -98,7 +101,12 @@ const Auth: NextPage = () => {
           autoComplete="current-password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        {showError && <ErrorLabel severity="error">{errorMessage}</ErrorLabel>}
+
+        {showAlert && (
+          <AlertLabel severity={errorMessage ? "error" : "success"}>
+            <AlertTitle>{errorMessage || "Sign in successful"}</AlertTitle>
+          </AlertLabel>
+        )}
         <SubmitButton type="submit" variant="contained" fullWidth>
           Sign Up
         </SubmitButton>
@@ -148,7 +156,7 @@ const InputField = styled(TextField)`
   margin: 20px;
 `;
 
-const ErrorLabel = styled(Alert)`
+const AlertLabel = styled(Alert)`
   width: 100%;
   margin-bottom: 20px;
 `;

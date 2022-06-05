@@ -14,14 +14,22 @@ interface MouseCoordinates {
   cursorY: number;
 }
 
+interface MapContainer {
+  clientWidth: number;
+  clientHeight: number;
+  scrollTop: number;
+  scrollLeft: number;
+}
+
 interface Target extends MouseCoordinates {
-  outerRect: HTMLDivElement;
+  outerRect: MapContainer;
 }
 
 interface Guess {
   character: string;
-  target: Target;
+  target?: Target;
   result: "success" | "warning" | "secondary";
+  timestamp: number;
 }
 
 function isWithin(value: number, lowerLimit: number, upperLimit: number) {
@@ -31,6 +39,7 @@ function isWithin(value: number, lowerLimit: number, upperLimit: number) {
 function checkIfWIthinFrame(characterRange: CharData, target: Target) {
   const { minX, maxX, minY, maxY } = characterRange;
   const { outerRect, cursorX, cursorY } = target;
+
   const isWithinWidth =
     isWithin(
       minX,
@@ -54,6 +63,7 @@ function checkIfWIthinFrame(characterRange: CharData, target: Target) {
       cursorY - (cursorY - outerRect.scrollTop),
       cursorY + (outerRect.clientHeight + outerRect.scrollTop - cursorY)
     );
+
   if (isWithinWidth && isWithinHeight) {
     return true;
   }
@@ -65,8 +75,8 @@ const getGuessResult = async (
   guess: Guess,
   resultHandler: Dispatch<SetStateAction<Guess[]>>
 ) => {
-  const { target, character } = guess;
-  const { cursorX, cursorY } = target;
+  const { target, character, timestamp } = guess;
+  const { cursorX, cursorY } = target as Target;
   const charSnap = await getDoc(doc(database, "characters", character));
   const { minX, maxX, minY, maxY } = charSnap.data() as CharData;
   const isWithinX = isWithin(cursorX, minX, maxX);
@@ -79,29 +89,32 @@ const getGuessResult = async (
         target,
         character,
         result: "success",
+        timestamp,
       },
     ]); // handle found state
   } else {
     const isWithinFrame = checkIfWIthinFrame(
       { minX, maxX, minY, maxY },
-      target
+      target as Target
     );
     if (isWithinFrame) {
       resultHandler((prevGuesses) => [
         ...prevGuesses,
         {
+          target,
           character,
           result: "warning",
-          target,
+          timestamp,
         },
       ]); // handle within-frame state
     } else {
       resultHandler((prevGuesses) => [
         ...prevGuesses,
         {
+          target,
           character,
           result: "secondary",
-          target,
+          timestamp,
         },
       ]); // handle total miss state
     }
@@ -109,4 +122,4 @@ const getGuessResult = async (
 };
 
 export default getGuessResult;
-export { type MouseCoordinates, type Target, type Guess };
+export { type Target, type Guess };

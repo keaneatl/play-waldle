@@ -4,9 +4,9 @@ import {
   Typography,
   Button,
   LinearProgress,
+  Box,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import { Character } from "../helpers/backend/getCharacters";
+import { Character } from "../helpers/backend/setSavedData";
 
 type Props = {
   characters: Character[] | null;

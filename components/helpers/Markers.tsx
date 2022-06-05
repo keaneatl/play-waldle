@@ -1,7 +1,7 @@
 import { styled, Tooltip } from "@mui/material";
 import { LocationOn, Square } from "@mui/icons-material";
 import { keyframes } from "@emotion/react";
-import { Guess } from "./backend/getGuessResult";
+import { Guess, Target } from "./backend/getGuessResult";
 import { ReactElement } from "react";
 
 type Props = {
@@ -17,33 +17,36 @@ enum markerOffset {
 const Markers = ({ guesses }: Props): JSX.Element => {
   return (
     <>
-      {guesses.map((guess, i) => (
-        <Tooltip
-          title={guess.character}
-          sx={{
-            top:
-              guess.target.cursorY -
-              (guess.result === "success"
-                ? markerOffset.location
-                : markerOffset.box),
-            left: guess.target.cursorX - markerOffset.box,
-          }}
-          key={`marker_${i}`}
-          arrow
-        >
-          {
-            ((guess.result === "success" && (
-              <SuccessMarker color={guess.result} />
-            )) ||
-              (guess.result === "warning" && (
-                <WithinFrameMarker color={guess.result} />
+      {guesses.map((guess, i) => {
+        const target = guess.target as Target;
+        return (
+          <Tooltip
+            title={guess.character}
+            sx={{
+              top:
+                target.cursorY -
+                (guess.result === "success"
+                  ? markerOffset.location
+                  : markerOffset.box),
+              left: target.cursorX - markerOffset.box,
+            }}
+            key={`marker_${i}`}
+            arrow
+          >
+            {
+              ((guess.result === "success" && (
+                <SuccessMarker color={guess.result} />
               )) ||
-              (guess.result === "secondary" && (
-                <Marker color={guess.result} />
-              ))) as ReactElement
-          }
-        </Tooltip>
-      ))}
+                (guess.result === "warning" && (
+                  <WithinFrameMarker color={guess.result} />
+                )) ||
+                (guess.result === "secondary" && (
+                  <Marker color={guess.result} />
+                ))) as ReactElement
+            }
+          </Tooltip>
+        );
+      })}
     </>
   );
 };

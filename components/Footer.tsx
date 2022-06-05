@@ -5,7 +5,7 @@ const Footer = (): JSX.Element => {
   return (
     <FooterAppBar>
       <Typography>
-        Made by Keane Tolentino{" "}
+        Copyright Keane Tolentino ©{" "}
         <a href="https://github.com/keaneatl" target="_blank" rel="noreferrer">
           <GitHubIcon htmlColor="black" />
         </a>
@@ -17,6 +17,7 @@ const Footer = (): JSX.Element => {
 export default Footer;
 
 const FooterAppBar = styled(AppBar)`
+  box-shadow: 10px 5px 5px black;
   margin-top: auto;
   padding: 10px;
   display: inline-block;

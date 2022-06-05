@@ -2,9 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import { connectAuthEmulator } from "firebase/auth";
-import { connectStorageEmulator } from "firebase/storage";
-import { connectFirestoreEmulator } from "firebase/firestore";
 
 // Your firebase config here :)
 const firebaseConfig = {
@@ -21,6 +18,4 @@ const database = getFirestore(firebaseApp);
 const authentication = getAuth(firebaseApp);
 const storage = getStorage(firebaseApp);
 
-// connectAuthEmulator(authentication, "http://localhost:9099");
-// connectStorageEmulator(storage, "localhost", 9199);
 export { firebaseApp, database, authentication, storage };

@@ -1,17 +1,35 @@
-import { Button, Menu, MenuItem, styled, Typography } from "@mui/material";
+import {
+  Button,
+  Menu,
+  MenuItem,
+  styled,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { Box, Grid } from "@mui/material";
 import Link from "next/link";
 import React, { useState } from "react";
 import { signOut } from "firebase/auth";
 import { authentication } from "../firebase/app";
 import { useAuthContext } from "./contexts/AuthContext";
+import logo from "../public/logo.png";
 import HowToPlay from "./helpers/HowToPlay";
+import Image from "next/image";
 
 const Header = (): JSX.Element => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [guideIsOpen, setGuideIsOpen] = useState(false);
   const user = useAuthContext();
-  const open = Boolean(anchorEl);
+
+  const handleSetDisplayName = (email: string | null) => {
+    if (email) {
+      return email.replace(
+        /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+        ""
+      );
+    }
+    return "Guest";
+  };
 
   const handleOpenGuide = () => {
     setGuideIsOpen(true);
@@ -50,9 +68,19 @@ const Header = (): JSX.Element => {
       <HowToPlay open={guideIsOpen} handleClose={handleCloseGuide} />
       <Grid container sx={{ display: { xs: "none", md: "flex" } }}>
         <Grid item xs={3}>
-          <Item sx={{ backgroundColor: "primary.dark" }}>
+          <Item
+            sx={{
+              backgroundColor: "primary.dark",
+              height: "75px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <Link href="/">
-              <a>Waldle</a>
+              <a>
+                <Image src={logo} alt="Waldle Logo" height={150} width={150} />
+              </a>
             </Link>
           </Item>
         </Grid>
@@ -69,17 +97,28 @@ const Header = (): JSX.Element => {
           </NavButton>
         </Grid>
         <Grid item xs={1.8}>
-          <Item>MORE MAPS</Item>
-        </Grid>
-        <Grid item xs={1.8}>
           <Item>
             <a href="mailto:keanetolentinoo@gmail.com">CONTACT</a>
           </Item>
         </Grid>
+        <Tooltip title="Coming soon!">
+          <Grid item xs={1.8}>
+            <NavButton color="inherit" disabled>
+              <NavButtonLabel>MORE MAPS</NavButtonLabel>
+            </NavButton>
+          </Grid>
+        </Tooltip>
         <Grid item xs={1.8}>
           {user !== null ? (
-            <NavButton onClick={handleSignOut} color="inherit">
-              <NavButtonLabel>SIGN OUT</NavButtonLabel>
+            <NavButton
+              onClick={handleSignOut}
+              color="inherit"
+              sx={{ height: "75px" }}
+            >
+              <NavButtonLabel>SIGN OUT&nbsp;</NavButtonLabel>
+              <Typography fontSize={15}>
+                ({user.displayName || handleSetDisplayName(user.email)})
+              </Typography>
             </NavButton>
           ) : (
             <Item>
@@ -91,10 +130,22 @@ const Header = (): JSX.Element => {
         </Grid>
       </Grid>
 
-      <Grid container sx={{ display: { xs: "flex", md: "none" } }}>
+      <Grid container sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
         <Grid item xs={9}>
-          <Item sx={{ backgroundColor: "primary.dark", textAlign: "left" }}>
-            Waldle
+          <Item
+            sx={{
+              backgroundColor: "primary.dark",
+              height: "75px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Link href="/">
+              <a>
+                <Image src={logo} alt="Waldle Logo" height={150} width={150} />
+              </a>
+            </Link>
           </Item>
         </Grid>
         <Grid item xs={3}>
@@ -102,52 +153,61 @@ const Header = (): JSX.Element => {
             Menu
           </MenuButton>
         </Grid>
-      </Grid>
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        sx={{ display: { xs: "block", md: "none" } }}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        PaperProps={{
-          style: {
-            minWidth: 180,
-            width: "25vw",
-            borderRadius: 0,
-          },
-        }}
-      >
-        <MenuItem>
+
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          sx={{ display: { xs: "block", md: "none" } }}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          PaperProps={{
+            style: {
+              minWidth: 180,
+              width: "25vw",
+              borderRadius: 0,
+            },
+          }}
+          keepMounted
+        >
           <Link href="/play">
-            <a>PLAY</a>
+            <MenuItem>
+              <a>PLAY</a>
+            </MenuItem>
           </Link>
-        </MenuItem>
-        <MenuItem onClick={handleOpenGuide}>HOW TO PLAY</MenuItem>
-        <MenuItem onClick={handleClose}>MORE MAPS</MenuItem>
-        <MenuItem onClick={handleClose}>
-          <a href="mailto:keanetolentinoo@gmail.com">CONTACT</a>
-        </MenuItem>
-        {user !== null ? (
-          <MenuItem>
-            <Button onClick={handleSignOut} color="inherit">
-              <Typography>SIGN OUT</Typography>
+          <MenuItem onClick={handleOpenGuide}>HOW TO PLAY</MenuItem>
+          <MenuItem onClick={handleClose}>
+            <a href="mailto:keanetolentinoo@gmail.com">CONTACT</a>
+          </MenuItem>
+          <MenuItem onClick={handleClose}>
+            <Button color="inherit" disabled>
+              <Typography>MORE MAPS</Typography>
             </Button>
           </MenuItem>
-        ) : (
-          <MenuItem>
+          {user !== null ? (
+            <MenuItem>
+              <Button onClick={handleSignOut} color="inherit">
+                <Typography>SIGN OUT&nbsp;</Typography>
+                <Typography fontSize={15}>
+                  ({user.displayName || handleSetDisplayName(user.email)})
+                </Typography>
+              </Button>
+            </MenuItem>
+          ) : (
             <Link href="/signin">
-              <a>SIGN IN</a>
+              <MenuItem>
+                <a>SIGN IN</a>
+              </MenuItem>
             </Link>
-          </MenuItem>
-        )}
-      </Menu>
+          )}
+        </Menu>
+      </Grid>
     </HeaderContainer>
   );
 };

@@ -9,6 +9,7 @@ import {
   Avatar,
   Container,
   Alert,
+  AlertTitle,
   Box,
   Button,
   styled,
@@ -24,35 +25,40 @@ import Link from "next/link";
 
 const Auth: NextPage = () => {
   const router = useRouter();
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("Unknown");
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleError = (errorMessage: string) => {
-    setErrorMessage(
-      errorMessage.replace("Firebase: ", "").replace("auth/", "")
-    );
-    errorMessage ? setShowError(true) : setShowError(false);
+  const handleAlert = (errorMessage?: string) => {
+    if (errorMessage) {
+      setErrorMessage(
+        errorMessage.replace("Firebase: ", "").replace("auth/", "")
+      );
+    }
+    setShowAlert(true);
   };
 
   const handleGoogleLogin = async () => {
     try {
       const googleProvider = new GoogleAuthProvider();
       const result = await signInWithPopup(authentication, googleProvider);
+      handleAlert();
+
       const user = result.user;
       setUsers(user);
       router.push("/");
     } catch (error: any) {
-      handleError(error.message);
+      handleAlert(error.message);
     }
   };
   const handlePlayAsGuest = async () => {
     try {
       await signInAnonymously(authentication);
+      handleAlert();
       router.push("/");
     } catch (error: any) {
-      handleError(error.message);
+      handleAlert(error.message);
     }
   };
 
@@ -64,11 +70,13 @@ const Auth: NextPage = () => {
         email,
         password
       );
+      handleAlert();
+
       const user = userCredential.user;
       setUsers(user);
       router.push("/");
     } catch (error: any) {
-      handleError(error.message);
+      handleAlert(error.message);
     }
   };
 
@@ -99,7 +107,11 @@ const Auth: NextPage = () => {
           autoComplete="current-password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        {showError && <ErrorLabel severity="error">{errorMessage}</ErrorLabel>}
+        {showAlert && (
+          <AlertLabel severity={errorMessage ? "error" : "success"}>
+            <AlertTitle>{errorMessage || "Sign in successful"}</AlertTitle>
+          </AlertLabel>
+        )}
         <SubmitButton type="submit" variant="contained" fullWidth>
           Sign in
         </SubmitButton>
@@ -152,10 +164,10 @@ const Form = styled(Box)`
 `;
 
 const InputField = styled(TextField)`
-  margin: 20px;
+  margin: 10px;
 `;
 
-const ErrorLabel = styled(Alert)`
+const AlertLabel = styled(Alert)`
   width: 100%;
   margin-bottom: 20px;
 `;

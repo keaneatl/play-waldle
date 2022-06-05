@@ -1,26 +1,38 @@
-import { Box, Container, styled } from "@mui/material";
+import { Box, styled } from "@mui/material";
 import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useAuthContext } from "../components/contexts/AuthContext";
-import { SyntheticEvent, useEffect, useState } from "react";
-import { Character } from "../components/helpers/backend/getCharacters";
+import { SyntheticEvent, useCallback, useEffect, useState } from "react";
 import getGuessResult, {
   Target,
   Guess,
 } from "../components/helpers/backend/getGuessResult";
-import DailyMap from "../public/Today.jpg";
+import WeeklyMap from "../public/Today.jpg";
 import { useStopwatch } from "../components/hooks/useStopwatch";
 import { Dispatch, SetStateAction } from "react";
 import Dropdown from "../components/menus/Dropdown";
-import Results from "../components/menus/Results";
 import Markers from "../components/helpers/Markers";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  collectionGroup,
+} from "firebase/firestore";
 import { database } from "../firebase/app";
-import { Category } from "../components/helpers/backend/getCategories";
-import setScores from "../components/helpers/backend/setScores";
-// TODO: DISPLAY LEADERBOARD AND RESULTS PROPERLY, REPRESENT GAME OVER!!!!!
-// LAST TODO: MORE MAPS
+import saveData, {
+  GameData,
+  Character,
+} from "../components/helpers/backend/setSavedData";
+import Drawer from "../components/menus/Drawer";
+
+interface Category {
+  name: string;
+  author: string;
+  credits: string;
+  visibility: "public" | "private";
+}
+
 type Props = {
   category: Category;
   charactersData: Character[];
@@ -38,6 +50,8 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
   const [characters, setCharacters] = useState<Character[]>(charactersData);
   const [target, setTarget] = useState<null | Target>(null);
   const [elapsed, setIsRunning] = useStopwatch();
+  const [gameOver, setGameOver] = useState(false);
+  const [mapCompleted, setMapCompleted] = useState(false);
   const user = useAuthContext();
   const weeklyCategory = category;
 
@@ -47,6 +61,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
     const image = e.target as HTMLImageElement;
     const imageContainer = e.currentTarget as HTMLDivElement;
     const imageRect = image.getBoundingClientRect();
+    const { clientWidth, clientHeight, scrollTop, scrollLeft } = imageContainer;
 
     setTarget((prevState) =>
       prevState
@@ -54,7 +69,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
         : {
             cursorX: e.clientX - Math.round(imageRect.left),
             cursorY: e.clientY - Math.round(imageRect.top),
-            outerRect: imageContainer,
+            outerRect: { clientWidth, clientHeight, scrollTop, scrollLeft },
           }
     );
   };
@@ -70,7 +85,10 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
     ) {
       return;
     }
-    getGuessResult({ character, target, result: "secondary" }, setGuesses);
+    getGuessResult(
+      { character, target, timestamp: elapsed as number, result: "secondary" },
+      setGuesses
+    );
   };
 
   const handleImageLoad = (e: SyntheticEvent<HTMLImageElement, Event>) => {
@@ -81,8 +99,36 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
     setMapDimensions({ width: image.width, height: image.height });
   };
 
-  // Character State Listener for Characters Menu
+  const handleGameLoad = useCallback(async () => {
+    const gameDataQuery = query(
+      collectionGroup(database, "scores"),
+      where("category", "==", weeklyCategory.name)
+    );
+    const querySnapshot = await getDocs(gameDataQuery);
+
+    querySnapshot.forEach((doc) => {
+      const gameData = doc.data() as GameData;
+      if (gameData.playerID === user?.uid) {
+        setCharacters(gameData.finalResult);
+        setGuesses(gameData.guesses);
+        setMapCompleted(true);
+      }
+    });
+  }, [user, weeklyCategory]);
+
+  // Check for previous gameData
   useEffect(() => {
+    if (user) {
+      handleGameLoad();
+    }
+  }, [handleGameLoad, user]);
+
+  // Guess listener
+  useEffect(() => {
+    if (mapCompleted) {
+      return;
+    }
+
     const latestGuess = guesses.at(-1);
 
     if (latestGuess) {
@@ -96,28 +142,49 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
         });
       });
     }
-  }, [guesses]);
+  }, [guesses, mapCompleted]);
 
-  // Gameover listener
+  // Game status listener
   useEffect(() => {
+    if (mapCompleted) {
+      return;
+    }
+
     const runStopwatch = setIsRunning as Dispatch<SetStateAction<boolean>>;
     if (
       guesses.length > 5 ||
       characters.every((character) => character.status === "success")
     ) {
       runStopwatch(false);
-      // TODO: Set record for logged in user in database
+
       if (user && user.displayName) {
-        // Require alias, upload score to leaderboard
-        setScores(user, elapsed as number, weeklyCategory.name);
+        saveData({
+          category: weeklyCategory.name,
+          guesses: guesses,
+          time: elapsed as number,
+          player: user.displayName,
+          playerID: user.uid,
+          finalResult: characters,
+        });
       }
+
+      // Require alias, upload score to leaderboard
+      setGameOver(true);
+      return;
     }
     return;
-  }, [guesses, user, weeklyCategory, characters]);
+  }, [characters, guesses, mapCompleted]);
 
   return (
     <>
-      <Results guesses={guesses} />
+      <Drawer
+        requireAlias={!Boolean(user && user.displayName)}
+        gameOver={gameOver || mapCompleted}
+        mapCredits={{
+          author: weeklyCategory.author,
+          credits: weeklyCategory.credits,
+        }}
+      />
       <Dropdown
         characters={characters}
         onClick={handleGuessEvent}
@@ -140,7 +207,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
         )}
         <Markers guesses={guesses} />
         <Image
-          src={DailyMap}
+          src={WeeklyMap}
           alt="Waldle Daily Map"
           layout="fixed"
           onLoad={handleImageLoad}
@@ -151,6 +218,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  // Get weekly category to get map, characters, user game data, etc.
   let category: Category = {
     name: "",
     author: "",
@@ -162,19 +230,13 @@ export const getServerSideProps: GetServerSideProps = async () => {
     categoriesRef,
     where("visibility", "==", "public")
   );
-  const querySnapshot = await getDocs(categoryQuery);
-  if (querySnapshot.empty) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-  querySnapshot.forEach((doc) => {
+  const categoryQuerySnapshot = await getDocs(categoryQuery);
+
+  categoryQuerySnapshot.forEach((doc) => {
     category = doc.data() as Category;
   });
 
+  // Load characters for weekly category
   const charsData: Character[] = [];
   const charactersQuerySnapshot = await getDocs(
     query(
@@ -197,21 +259,12 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 export default Play;
 
-const LoadingContainer = styled(Container)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 80vh;
-  width: 100vw;
-`;
-
 const MapContainer = styled(Box)`
   margin: 0 auto;
   width: 100vw;
   border: 1px solid black;
   position: relative;
-  height: 80vh;
+  height: 75vh;
   overflow: auto;
   text-align: center;
 `;
