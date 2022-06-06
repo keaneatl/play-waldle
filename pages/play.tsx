@@ -223,6 +223,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
               <Close fontSize="inherit" />
             </IconButton>
           }
+          severity="info"
         >
           Tip: You can scroll horizontally and/or vertically across the map
         </Alert>
