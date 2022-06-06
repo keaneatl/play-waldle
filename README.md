@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">Waldle</h1>
   <p align="center">
-    <strong>Tune in weekly to find three characters having only five tries in Walde, a Wordle-inspired Where is Waldo game.</strong>
+    <strong>Tune in weekly to find three characters having only six tries in Walde, a Wordle-inspired Where is Waldo game.</strong>
      <br /><br />
     <a href="https://playwaldle.xyz" target="_blank"><strong>Live Preview »</strong></a>
     <br /><br />
