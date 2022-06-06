@@ -18,9 +18,9 @@ const HowToPlay = ({ open, handleClose }: Props): JSX.Element => {
       <DialogTitle>How to Play</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          You have five tries to find three characters in the map hidden in
-          plain sight. Clicking in a specific spot and indicating which
-          character is in that spot counts as one guess.
+          You have six tries to find three characters in the map hidden in plain
+          sight. Clicking in a specific spot and indicating which character is
+          in that spot counts as one guess.
         </DialogContentText>
 
         <DialogContentText>

@@ -44,12 +44,6 @@ const Drawer = ({
       <Dialog open={isOpen} onClose={handleToggle}>
         <DialogTitle>LEADERBOARD</DialogTitle>
         {showLeaderboard ? (
-          <DialogContent>
-            <DialogContentText>
-              Please login or sign up to see the leaderboard
-            </DialogContentText>
-          </DialogContent>
-        ) : (
           <>
             <DialogContent>
               <Leaderboard />
@@ -58,6 +52,12 @@ const Drawer = ({
               <Button onClick={handleToggle}>Close</Button>
             </DialogActions>
           </>
+        ) : (
+          <DialogContent>
+            <DialogContentText>
+              Please login or sign up to see the leaderboard
+            </DialogContentText>
+          </DialogContent>
         )}
         <MapCredits>
           This image is made by{" "}

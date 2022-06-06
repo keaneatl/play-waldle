@@ -1,6 +1,7 @@
 import { collectionGroup, query, where, getDocs } from "firebase/firestore";
 import { Dispatch, SetStateAction } from "react";
 import { GameData } from "./setSavedData";
+import { Character } from "./setSavedData";
 import { Guess } from "./getGuessResult";
 import { database } from "../../../firebase/app";
 
@@ -8,6 +9,7 @@ interface Score {
   player: string;
   category: string;
   guesses: Array<Omit<Guess, "target">>;
+  finalResult: Array<Character>;
   time: number;
 }
 
@@ -24,14 +26,17 @@ const getScores = async (
 
   querySnapshot.forEach((doc) => {
     const gameData = doc.data() as GameData;
-    const { category, time, player, guesses } = gameData;
-    const score: Score = {
-      category,
-      player,
-      guesses,
-      time,
-    };
-    scores.push(score);
+    const { category, time, player, guesses, finalResult } = gameData;
+    if (finalResult.every((character) => character.status === "success")) {
+      const score: Score = {
+        category,
+        player,
+        guesses,
+        time,
+        finalResult,
+      };
+      scores.push(score);
+    }
   });
 
   scoresHandler(scores as Array<GameData>);

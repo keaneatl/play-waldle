@@ -155,10 +155,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
     }
 
     const runStopwatch = setIsRunning as Dispatch<SetStateAction<boolean>>;
-    if (
-      guesses.length > 5 ||
-      characters.every((character) => character.status === "success")
-    ) {
+    if (characters.every((character) => character.status === "success")) {
       runStopwatch(false);
 
       if (user.displayName) {
@@ -170,9 +167,22 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
           playerID: user.uid,
           finalResult: characters,
         });
+      } else {
+        saveData({
+          category: weeklyCategory.name,
+          guesses: guesses,
+          time: elapsed as number,
+          player: user.email ? user.email : "Player",
+          playerID: user.uid,
+          finalResult: characters,
+        });
       }
+
       setGameOver(true);
       return;
+    } else if (guesses.length > 5) {
+      setGameOver(true);
+      runStopwatch(false);
     }
     return;
   }, [characters, guesses, mapCompleted, user]);
@@ -180,7 +190,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
   return (
     <>
       <Drawer
-        showLeaderboard={!Boolean(user && user.displayName)}
+        showLeaderboard={Boolean(user)}
         gameOver={gameOver || mapCompleted}
         mapCredits={{
           author: weeklyCategory.author,
