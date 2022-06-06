@@ -1,4 +1,11 @@
-import { Box, CircularProgress, styled } from "@mui/material";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Collapse,
+  IconButton,
+  styled,
+} from "@mui/material";
 import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import { useAuthContext } from "../components/contexts/AuthContext";
@@ -26,6 +33,7 @@ import saveData, {
 } from "../components/helpers/backend/setSavedData";
 import Drawer from "../components/menus/Drawer";
 import { useRouter } from "next/router";
+import { Close } from "@mui/icons-material";
 
 interface Category {
   name: string;
@@ -53,6 +61,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
   const [elapsed, setIsRunning] = useStopwatch();
   const [gameOver, setGameOver] = useState(false);
   const [mapCompleted, setMapCompleted] = useState(false);
+  const [tipIsOpen, setTipIsOpen] = useState(true);
   const user = useAuthContext();
   const weeklyCategory = category;
   const router = useRouter();
@@ -155,7 +164,10 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
     }
 
     const runStopwatch = setIsRunning as Dispatch<SetStateAction<boolean>>;
-    if (characters.every((character) => character.status === "success")) {
+    if (
+      characters.every((character) => character.status === "success") ||
+      guesses.length > 5
+    ) {
       runStopwatch(false);
 
       if (user.displayName) {
@@ -179,12 +191,7 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
       }
 
       setGameOver(true);
-      return;
-    } else if (guesses.length > 5) {
-      setGameOver(true);
-      runStopwatch(false);
     }
-    return;
   }, [characters, guesses, mapCompleted, user]);
 
   return (
@@ -202,6 +209,24 @@ const Play: NextPage<Props> = ({ category, charactersData }: Props) => {
         onClick={handleGuessEvent}
         activeTarget={Boolean(target)}
       />
+      <Collapse in={tipIsOpen}>
+        <Alert
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setTipIsOpen(false);
+              }}
+            >
+              <Close fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          Tip: You can scroll horizontally and/or vertically across the map
+        </Alert>
+      </Collapse>
       {user ? (
         <MapContainer
           onClick={handleActiveGuess}
