@@ -1,11 +1,4 @@
-import {
-  Button,
-  Menu,
-  MenuItem,
-  styled,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Button, Menu, MenuItem, styled, Typography } from "@mui/material";
 import { Box, Grid } from "@mui/material";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -57,11 +50,11 @@ const Header = (): JSX.Element => {
     <HeaderContainer>
       <HowToPlay open={guideIsOpen} handleClose={handleCloseGuide} />
       <Grid container sx={{ display: { xs: "none", md: "flex" } }}>
-        <Grid item xs={3}>
+        <Grid item xs={3.5}>
           <Item
             sx={{
               backgroundColor: "primary.dark",
-              height: "75px",
+              height: "80px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -74,37 +67,26 @@ const Header = (): JSX.Element => {
             </Link>
           </Item>
         </Grid>
-        <Grid item xs={1.8}>
+        <Grid item xs={2.125}>
           <Item>
             <Link href="/play">
               <a>PLAY</a>
             </Link>
           </Item>
         </Grid>
-        <Grid item xs={1.8}>
+        <Grid item xs={2.125}>
           <NavButton onClick={handleOpenGuide} color="inherit">
             <NavButtonLabel>HOW TO PLAY</NavButtonLabel>
           </NavButton>
         </Grid>
-        <Grid item xs={1.8}>
+        <Grid item xs={2.125}>
           <Item>
             <a href="mailto:keanetolentinoo@gmail.com">CONTACT</a>
           </Item>
         </Grid>
-        <Tooltip title="Coming soon!">
-          <Grid item xs={1.8}>
-            <NavButton color="inherit" disabled>
-              <NavButtonLabel>MORE MAPS</NavButtonLabel>
-            </NavButton>
-          </Grid>
-        </Tooltip>
-        <Grid item xs={1.8}>
+        <Grid item xs={2.125}>
           {user !== null ? (
-            <NavButton
-              onClick={handleSignOut}
-              color="inherit"
-              sx={{ height: "75px" }}
-            >
+            <NavButton onClick={handleSignOut} color="inherit">
               <NavButtonLabel>SIGN OUT&nbsp;</NavButtonLabel>
               <Typography fontSize={15}>
                 ({user.displayName || user.email || "Guest"})
@@ -175,11 +157,6 @@ const Header = (): JSX.Element => {
           <MenuItem onClick={handleClose}>
             <a href="mailto:keanetolentinoo@gmail.com">CONTACT</a>
           </MenuItem>
-          <MenuItem onClick={handleClose}>
-            <Button color="inherit" disabled>
-              <Typography>MORE MAPS</Typography>
-            </Button>
-          </MenuItem>
           {user !== null ? (
             <MenuItem>
               <Button onClick={handleSignOut} color="inherit">
@@ -211,6 +188,7 @@ const HeaderContainer = styled(Box)`
 
 const Item = styled(Typography)(
   ({ theme }) => `
+  height: 80px;
     font-weight: ${theme.typography.fontWeightBold};
     text-align: center;
     padding: 25px 10px;
@@ -234,6 +212,7 @@ const MenuButton = styled(Button)(
 
 const NavButton = styled(MenuButton)`
   padding: 25px 10px;
+  height: 80px;
 `;
 
 const NavButtonLabel = styled(Typography)(

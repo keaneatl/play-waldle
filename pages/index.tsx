@@ -20,7 +20,7 @@ const Home: NextPage = () => {
         />
         <Message maxWidth="lg">
           <MessageHeader variant="h3" color="text" fontWeight={500}>
-            Waldle #1
+            Waldle
           </MessageHeader>
           <MessageDesc color="text" fontWeight={500}>
             Find three characters in a sea of many others, inspired by the
